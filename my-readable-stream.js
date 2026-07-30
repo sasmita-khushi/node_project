@@ -9,9 +9,11 @@ class MyReadableStream extends Readable {
 
   _read(size) {
     // this.push("World");
-    this.push(crypto.randomBytes(size));
+    setTimeout(() => {
+      this.push(crypto.randomBytes(size));
+    }, 0);
 
-    this.push(null);
+    // this.push(null);
     // this.push(this.#count.toString());
     // this.#count++;
     // if (this.#count > 10) {
@@ -28,4 +30,18 @@ mrs.on("data", (chunk) => {
 
 mrs.on("end", () => {
   console.log("Stream Ended");
+});
+
+let isPaused = false;
+
+process.stdin.on("data", (chunk) => {
+  if (isPaused) {
+    console.log("resumed the stream ");
+    mrs.resume();
+    isPaused = false;
+  } else {
+    console.log("Paused the stream");
+    mrs.pause();
+    isPaused = true;
+  }
 });

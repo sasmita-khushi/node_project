@@ -1,3 +1,4 @@
-1 - one
-2 - two
-3 - three
+const multiply = (a, b) => {
+  return a * b;
+};
+console.log(multiply(6, 7));
