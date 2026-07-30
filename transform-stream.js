@@ -15,10 +15,11 @@ class MyTransformStream extends Transform {
 }
 
 const mts = new MyTransformStream();
-const rs = process.stdin.on("data", (chunk) => {
-  console.log("data is", chunk);
-});
 
 const ws = fs.createWriteStream("t.txt");
+
+const rs = process.stdin.on("data", (chunk) => {
+  console.log("data");
+});
 
 rs.pipe(mts).pipe(ws);
