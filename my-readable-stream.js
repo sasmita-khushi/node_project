@@ -1,4 +1,4 @@
-import { Readable } from "node:stream";
+import { Readable, Writable } from "node:stream";
 import crypto from "node:crypto";
 
 class MyReadableStream extends Readable {
@@ -11,7 +11,7 @@ class MyReadableStream extends Readable {
     // this.push("World");
     setTimeout(() => {
       this.push(crypto.randomBytes(size));
-    }, 0);
+    }, 100);
 
     // this.push(null);
     // this.push(this.#count.toString());
@@ -24,6 +24,19 @@ class MyReadableStream extends Readable {
 
 let mrs = new MyReadableStream({ highWaterMark: 1 });
 
+class MyWritableStream extends Writable {
+  _write(chunk, encoding, callback) {
+    console.log("Writing chunk", [...chunk]);
+    setTimeout(() => {
+      callback();
+    }, 300);
+  }
+}
+
+let mws = new MyWritableStream();
+
+mrs.pipe(mws);
+
 mrs.on("data", (chunk) => {
   console.log("Received data", [...chunk]);
 });
@@ -32,16 +45,16 @@ mrs.on("end", () => {
   console.log("Stream Ended");
 });
 
-let isPaused = false;
+// let isPaused = false;
 
-process.stdin.on("data", (chunk) => {
-  if (isPaused) {
-    console.log("resumed the stream ");
-    mrs.resume();
-    isPaused = false;
-  } else {
-    console.log("Paused the stream");
-    mrs.pause();
-    isPaused = true;
-  }
-});
+// process.stdin.on("data", (chunk) => {
+//   if (isPaused) {
+//     console.log("resumed the stream ");
+//     mrs.resume();
+//     isPaused = false;
+//   } else {
+//     console.log("Paused the stream");
+//     mrs.pause();
+//     isPaused = true;
+//   }
+// });
